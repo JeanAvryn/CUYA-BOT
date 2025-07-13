@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reports | CUYA-BOT</title>
+     <link rel="icon" type="image/png" href="{{ url_for('static', filename='uploads/chatbot.png') }}">
+    <style>
+        body {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            padding: 30px;
+            background: #f7f7f7;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 50%;
+            margin-bottom: 20px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #222;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        button {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📋 CUYA-BOT Emergency Reports</h1>
+
+    <input type="text" id="searchInput" style="font-family: Verdana, Geneva, Tahoma, sans-serif;" placeholder="🔍 Search by type, location, or date..." onkeyup="filterReports()">
+
+    <table id="reportTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+                <th>Emergency Type</th>
+                <th>Location</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reports %}
+            <tr id="row-{{ r[0] }}">
+                <td>{{ r[0] }}</td>
+                <td>{{ r[1] }}</td>
+                <td>{{ r[2] }}</td>
+                <td>{{ r[3] }}</td>
+                <td>
+                    <button onclick="deleteReport({{ r[0] }})">🗑️ Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function deleteReport(id) {
+            if (confirm("Are you sure you want to delete this report?")) {
+                fetch(`/delete/${id}`, {
+                    method: "POST"
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`row-${id}`).remove();
+                    }
+                });
+            }
+        }
+
+        function filterReports() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const rows = document.querySelectorAll("#reportTable tbody tr");
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(input) ? "" : "none";
+            });
+        }
+    </script>
+</body>
+</html>
