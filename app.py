@@ -235,5 +235,5 @@ def delete_report(report_id):
     conn.close()
     return jsonify({'success': True})
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
+
