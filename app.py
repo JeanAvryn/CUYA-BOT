@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import session, redirect, url_for
 import sqlite3
 import urllib.parse
@@ -155,7 +155,7 @@ def chatbot_response(message):
             user_state["stage"] = None
             location = user_state["extra_info"].get("location", "Unknown")
             emergency_type = user_state["emergency_type"]
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+            timestamp = (datetime.utcnow() + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
             answers = "; ".join([f"{k} – {v}" for k, v in user_state["extra_info"].items() if k != "location"])
 
             # Reset state
@@ -234,6 +234,7 @@ def delete_report(report_id):
     conn.commit()
     conn.close()
     return jsonify({'success': True})
+
 
 
 
