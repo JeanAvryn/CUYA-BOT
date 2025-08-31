@@ -3,234 +3,252 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='uploads/chatbot.png') }}">
   <title>CUYA-BOT | Cuyapo's Chatbot</title>
   <style>
-    :root {
-      --light-bg: #f1f1f1;
-      --dark-bg: #1e1e1e;
-      --light-box: white;
-      --dark-box: #2a2a2a;
-      --light-text: #000;
-      --dark-text: #fff;
-      --bot-light: #f1f0f0;
-      --bot-dark: #3a3a3a;
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
-      background: linear-gradient(135deg, var(--light-bg), #e0e0e0);
-      color: var(--light-text);
+      background: linear-gradient(to right, #eef2f3, #8e9eab);
+      margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
-      transition: 0.3s;
+      transition: background 0.3s;
     }
 
     body.dark-mode {
-      background: linear-gradient(135deg, var(--dark-bg), #000);
-      color: var(--dark-text);
+      background: linear-gradient(to right, #2b2b2b, #1e1e1e);
+      color: #fff;
+    }
+
+    #chat-container {
+      background: #fff;
+      width: 100%;
+      max-width: 450px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+      .button-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+      background-color: #ffffff; /* default light mode */
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+
+    body.dark-mode .button-row {
+      background-color: #2a2a2a; /* match dark box */
+    }
+
+
+    body.dark-mode #chat-container {
+      background: #2a2a2a;
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
     }
 
     h2 {
       text-align: center;
-      color: inherit;
-      margin-bottom: 10px;
-    }
-
-    #chat-container {
-      width: 400px;
-      background: var(--light-box);
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-
-    body.dark-mode #chat-container {
-      background: var(--dark-box);
-      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      margin: 0;
+      padding: 1rem;
+      font-size: 1.2rem;
+      background: #0a244e;
+      color: white;
     }
 
     #chat-box {
-      height: 300px;
+      height: 350px;
       overflow-y: auto;
-      padding: 10px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     .user, .bot {
-      margin: 10px 0;
-      padding: 12px 16px;
+      padding: 12px 18px;
       border-radius: 18px;
       max-width: 80%;
-      line-height: 1.5;
+      line-height: 1.4;
       word-wrap: break-word;
+      animation: fadeIn 0.3s ease-in-out;
     }
 
     .user {
-      background-color: #0765fe;
-      color: white;
       align-self: flex-end;
-      text-align: right;
+      background: #0a244e;
+      color: white;
       border-bottom-right-radius: 0;
     }
 
     .bot {
-      background-color: var(--bot-light);
       align-self: flex-start;
-      text-align: left;
+      background: #f0f0f0;
+      color: #000;
       border-bottom-left-radius: 0;
     }
 
     body.dark-mode .bot {
-      background-color: var(--bot-dark);
-      color: var(--dark-text);
+      background: #444;
+      color: #fff;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 1rem;
+      border-top: 1px solid #ddd;
+      gap: 10px;
     }
 
     #message {
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
-      width: 70%;
-      padding: 8px;
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 50px;
+      font-size: 0.95rem;
     }
 
     #send {
-      font-weight: bold;
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
-      padding: 8px 25px;
+      background: #0a244e;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
-    .dots span {
-      animation: blink 1s infinite;
-      opacity: 0;
+    #send:hover {
+      background: #000;
     }
 
-    .dots span:nth-child(1) { animation-delay: 0s; }
-    .dots span:nth-child(2) { animation-delay: 0.2s; }
-    .dots span:nth-child(3) { animation-delay: 0.4s; }
-
-  
-    @keyframes blink {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
+    .top-buttons {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      background: #f9f9f9;
     }
 
     .toggle-btn {
-      font-family: Verdana, Geneva, Tahoma, sans-serif;
       background: #333;
-      color: white;
+      color: #fff;
       border: none;
       padding: 6px 12px;
-      border-radius: 5px;
-      margin-bottom: 10px;
+      border-radius: 6px;
       cursor: pointer;
     }
 
-    @media (max-width: 500px) {
-      #chat-container {
-        width: 90%;
-        padding: 15px;
-      }
-
-      #message {
-        width: 65%;
-      }
-
-      #send {
-        width: 30%;
-      }
+    body.dark-mode .toggle-btn {
+      background: #ddd;
+      color: #111;
     }
 
-    .user, .bot {
-  animation: popin 0.3s ease;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 9999;
 }
 
-  @keyframes popin {
-  0% { transform: translateY(10px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #4CAF50;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
 }
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
   </style>
 </head>
 <body>
+
+  <!-- Loading screen -->
+<div id="loading-screen">
+  <div class="loader"></div>
+  <p>CUYA-BOT is loading...</p>
+</div>
+
+<!-- Main content -->
+<div id="main-content" style="display: none;">
+
   <div id="chat-container">
-    <button style="font-family: Verdana, Geneva, Tahoma, sans-serif;" onclick="startNewChat()">+ New Chat</button>
-    <h2>🤖 CUYA-BOT: your localized emergency assistant</h2>
-    <button class="toggle-btn" onclick="toggleDarkMode()">🌗 Toggle Dark Mode</button>
+    <h2>🤖 CUYA-BOT: The Cuyapeño's Chatbot</h2>
+    <div class="button-row">
+      <button class="toggle-btn" onclick="startNewChat()">+ New Chat</button>
+      <button class="toggle-btn" onclick="toggleDarkMode()">🌗 Dark Mode</button>
+    </div>
     <div id="chat-box">
-      <!-- Chat messages appear here -->
       <div id="typing-indicator" class="bot" style="display: none;">
         🤖 <span class="dots">Typing<span>.</span><span>.</span><span>.</span></span>
       </div>
     </div>
-    <input type="text" id="message" placeholder="Type your message..." />
-    <button id="send">Send</button>
-    <form id="chat-form" enctype="multipart/form-data">
-</form>
+    <div class="input-area">
+      <input type="text" id="message" placeholder="Type your message..." />
+      <button id="send">Send</button>
+    </div>
   </div>
 
   <script>
-    const chatBox = document.getElementById("chat-box");
-    window.onload = () => {
-  appendMessage("bot", "👋 Hello! I’m CUYA-BOT, your emergency assistant.\n📝 Try saying something like ‘May sunog!’ or ‘There’s a flood here!’ to report an emergency.");
-};
 
+      window.addEventListener("load", function () {
+    // Wait for 1.5 seconds then hide loading
+    setTimeout(function () {
+      document.getElementById("loading-screen").style.display = "none";
+      document.getElementById("main-content").style.display = "block";
+    }, 1500);
+  });
+
+    const chatBox = document.getElementById("chat-box");
     const messageInput = document.getElementById("message");
     const sendBtn = document.getElementById("send");
 
-    const form = document.getElementById("chat-form");
-
-form.onsubmit = async (e) => {
-  e.preventDefault();
-
-  const userMessage = messageInput.value.trim();
-  const image = document.getElementById("image").files[0];
-
-  if (!userMessage && !image) return;
-
-  appendMessage("user", userMessage || "[📷 Image Uploaded]");
-  messageInput.value = "";
-  document.getElementById("image").value = "";
-
-  const formData = new FormData();
-  formData.append("message", userMessage);
-  if (image) formData.append("image", image);
-
-  typingIndicator.style.display = "block";
-
-  try {
-    const response = await fetch("/chat", {
-      method: "POST",
-      body: formData,
-    });
-    const data = await response.json();
-    typingIndicator.style.display = "none";
-    appendMessage("bot", data.reply);
-  } catch (error) {
-    typingIndicator.style.display = "none";
-    appendMessage("bot", "⚠️ Error contacting CUYA-BOT.");
-  }
-};
+    window.onload = () => {
+      appendMessage("bot", "👋 Hello! I’m CUYA-BOT, your emergency assistant.\n📝 Try saying something like ‘May sunog!’ or ‘May baha!’");
+    };
 
     function appendMessage(sender, text) {
-  const msg = document.createElement("div");
-  msg.className = sender;
+      const msg = document.createElement("div");
+      msg.className = sender;
 
-  const time = new Date();
-  const hours = time.getHours();
-  const minutes = time.getMinutes().toString().padStart(2, "0");
-  const ampm = hours >= 12 ? "PM" : "AM";
-  const formattedTime = `${((hours + 11) % 12 + 1)}:${minutes} ${ampm}`;
+      const time = new Date();
+      const hours = time.getHours();
+      const minutes = time.getMinutes().toString().padStart(2, "0");
+      const ampm = hours >= 12 ? "PM" : "AM";
+      const formattedTime = `${((hours + 11) % 12 + 1)}:${minutes} ${ampm}`;
 
-  const icon = sender === "user" ? "🧍" : "🤖";
-
-  msg.innerHTML = `<strong>${icon}</strong> ${text}<br><small style="font-size: 0.75rem; color: #666;">${formattedTime}</small>`;
-  chatBox.insertBefore(msg, document.getElementById("typing-indicator"));
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
-
+      const icon = sender === "user" ? "🧍" : "🤖";
+      msg.innerHTML = `<strong>${icon}</strong> ${text}<br><small style="font-size: 0.75rem; color: gray;">${formattedTime}</small>`;
+      chatBox.insertBefore(msg, document.getElementById("typing-indicator"));
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
 
     sendBtn.onclick = async () => {
       const userMessage = messageInput.value.trim();
@@ -239,28 +257,24 @@ form.onsubmit = async (e) => {
       appendMessage("user", userMessage);
       messageInput.value = "";
 
-      // Show typing animation
-      const typingIndicator = document.getElementById("typing-indicator");
-      typingIndicator.style.display = "block";
-      chatBox.scrollTop = chatBox.scrollHeight;
+      const typing = document.getElementById("typing-indicator");
+      typing.style.display = "block";
 
       try {
         const response = await fetch("/chat", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ message: userMessage })
-});
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage })
+        });
 
-const data = await response.json();
+        const data = await response.json();
 
-// Simulate typing delay (e.g., 1.5 seconds)
-setTimeout(() => {
-  typingIndicator.style.display = "none";
-  appendMessage("bot", data.reply);
-}, 1000); // 1500 milliseconds = 1.5 seconds
-
+        setTimeout(() => {
+          typing.style.display = "none";
+          appendMessage("bot", data.reply);
+        }, 1000);
       } catch (error) {
-        typingIndicator.style.display = "none";
+        typing.style.display = "none";
         appendMessage("bot", "⚠️ Error contacting CUYA-BOT.");
       }
     };
@@ -269,30 +283,16 @@ setTimeout(() => {
       if (e.key === "Enter") sendBtn.click();
     });
 
-// dark mode
-function toggleDarkMode() {
-  document.body.classList.toggle('dark-mode');
-}
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
 
-// New chat
-function startNewChat() {
-  if (confirm("Start a new conversation?")) {
-    const chatBox = document.getElementById("chat-box");
-    chatBox.innerHTML = '';
-
-    // Re-append typing indicator (if it was removed)
-    const typingDiv = document.createElement("div");
-    typingDiv.id = "typing-indicator";
-    typingDiv.className = "bot";
-    typingDiv.style.display = "none";
-    typingDiv.innerHTML = '🤖 <span class="dots">Typing<span>.</span><span>.</span><span>.</span></span>';
-    chatBox.appendChild(typingDiv);
-
-    // Trigger the initial bot message
-    appendMessage("bot", "👋 Hello! I’m CUYA-BOT, your emergency assistant.\n📝 Try saying something like ‘May sunog!’ or ‘There’s a flood here!’ to report an emergency.");
-  }
-}
-
+    function startNewChat() {
+      if (confirm("Start a new conversation?")) {
+        chatBox.innerHTML = '<div id="typing-indicator" class="bot" style="display: none;">🤖 Typing<span class="dots">...</span></div>';
+        appendMessage("bot", "👋 Hello! I’m CUYA-BOT, your emergency assistant.\n📝 Try saying something like ‘May sunog!’ or ‘May baha!’");
+      }
+    }
   </script>
 </body>
 </html>
