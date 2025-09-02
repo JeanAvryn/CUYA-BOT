@@ -177,7 +177,7 @@ def chatbot_response(message):
 
             encoded_location = urllib.parse.quote(location)
             maps_link = f"https://www.google.com/maps/search/?q={encoded_location}"
-            return f"✅ Naiulat na ang insidente sa LGU.\n📍 {location}\n🗺️ {maps_link}"
+            return f"✅ Naiulat na ang insidente sa LGU. Manatili lang pong kalmado.\n📍 {location}\n🗺️ {maps_link}"
 
     # Detect emergencies
     keywords = {
@@ -234,6 +234,7 @@ def delete_report(report_id):
     conn.commit()
     conn.close()
     return jsonify({'success': True})
+
 
 
 
