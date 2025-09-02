@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from datetime import datetime, timedelta
+from datetime import datetime
 from flask import session, redirect, url_for
 import sqlite3
 import urllib.parse
@@ -155,7 +155,7 @@ def chatbot_response(message):
             user_state["stage"] = None
             location = user_state["extra_info"].get("location", "Unknown")
             emergency_type = user_state["emergency_type"]
-            timestamp = (datetime.utcnow() + timedelta(hours=8)).strftime("%Y-%m-%d %H:%M")
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
             answers = "; ".join([f"{k} – {v}" for k, v in user_state["extra_info"].items() if k != "location"])
 
             # Reset state
@@ -208,10 +208,14 @@ def chatbot_response(message):
 # Routes
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('landing.html')
 
-@app.route('/chat', methods=['POST'])
-def chat():
+@app.route("/chat")
+def chat_page():
+    return render_template("index.html")  
+
+@app.route('/chat_api', methods=['POST'])
+def chat_api():
     data = request.get_json()
     user_message = data.get('message', '')
     bot_reply = chatbot_response(user_message)
@@ -235,7 +239,5 @@ def delete_report(report_id):
     conn.close()
     return jsonify({'success': True})
 
-
-
-
-
+if __name__ == '__main__':
+    app.run(debug=True)
