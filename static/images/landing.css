@@ -17,6 +17,16 @@ body, html {
   overflow: hidden;
 }
 
+.government {
+  position: relative;
+  height: 100vh;
+  background: url("{{ url_for('static', filename='uploads/bg2.jpg') }}") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
 /* Blur overlay */
 .overlay {
   position: absolute;
@@ -75,5 +85,137 @@ p {
 .btn:hover {
   background: #a8dadc;
   transform: translateY(-3px);
+}
+
+.about-container {
+  max-width: 800px;
+  margin: auto;
+}
+
+/* About section (full screen like hero & gov) */
+.about {
+  position: relative;
+  height: 100vh;
+  background: url("{{ url_for('static', filename='uploads/bg2.jpg') }}") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.about .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.3); /* light tint for readability */
+  z-index: 1;
+}
+
+.about-container {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #1d3557;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  max-width: 800px;
+}
+
+/* Government section (blur like hero) */
+.government {
+  position: relative;
+  height: 100vh;
+  background: url("{{ url_for('static', filename='uploads/bg2.jpg') }}") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.government .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.3); /* dark tint for contrast */
+  z-index: 1;
+}
+
+.gov-container {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #f1faee;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+.gov-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.gov-card {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+}
+
+.gov-logo {
+  width: 120px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.gov-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Tooltip preview */
+.hq-tooltip {
+  position: absolute;
+  top: 10%; 
+  left: 200%;
+  transform: translateX(-50%);
+  width: 220px;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.hq-tooltip img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.hq-tooltip p {
+  font-size: 0.9rem;
+  color: #333;
+  margin: 0;
+}
+
+/* Show tooltip on hover */
+.gov-card:hover .hq-tooltip {
+  opacity: 1;
 }
 
