@@ -5,20 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CUYA-BOT</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='images/landing.css') }}">
-  <link rel="icon" href="{{ url_for('static', filename='images/logo.png')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='uploads/landing.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='uploads/logo.png')}}">
 </head>
 
-<style>
+<!-- BACKGROUNDS -->
+<style> 
     .hero {
-        background: url("{{ url_for('static', filename='images/background.png') }}") no-repeat center center/cover;
+        background: url("{{ url_for('static', filename='uploads/background.png') }}") no-repeat center center/cover;
     }
+
+    .government {
+        background: url("{{ url_for('static', filename='uploads/bg2.jpg') }}") no-repeat center center/cover;
+    }
+
 </style>
 <body>
   <div class="hero">
     <div class="overlay"></div>
     <div class="container">
-      <img src="{{ url_for('static', filename='images/logo.png') }}" 
+      <img src="{{ url_for('static', filename='uploads/logo.png') }}" 
            alt="CUYA-BOT Logo" 
            class="logo">
       <h1>Welcome to CUYA-BOT</h1>
@@ -26,5 +32,62 @@
       <a href="/chat" class="btn">Chat now!</a>
     </div>
   </div>
+
+<!-- ABOUT SECTION -->
+<div class="about">
+  <div class="overlay"></div>
+  <div class="about-container">
+    <h2>About CUYA-BOT</h2>
+    <p>CUYA-BOT is a disaster mitigation chatbot specifically designed for Cuyapo, Nueva Ecija. 
+    It helps citizens report emergencies, connect with government units, and access real-time safety updates.
+    It was developed by STEM students of Dr. Ramon de Santos National High School, Cuyapo, Nueva Ecija to further
+    improve and speed up disaster mitigation in their town.</p>
+  </div>
+</div>
+
+<!-- GOVERNMENT SECTION -->
+<div class="government">
+  <div class="overlay"></div>
+  <div class="gov-container">
+    <h2>Local Government Units</h2>
+    <div class="gov-grid">
+       <div class="gov-grid">
+
+  <!-- BFP -->
+  <div class="gov-card">
+    <img src="{{ url_for('static', filename='uploads/bfp.jpg') }}" 
+         alt="BFP Logo" class="gov-logo">
+    <div class="hq-tooltip">
+      <img src="{{ url_for('static', filename='uploads/bfp_HQ.jpg') }}" alt="BFP HQ">
+      <p>BFP Cuyapo <br> <b>Address:</b> District 1, Cuyapo, N.E
+      <br> <b>Contact:</b> 09222366719</p>
+    </div>
+  </div>
+
+  <!-- PNP -->
+  <div class="gov-card">
+    <img src="{{ url_for('static', filename='uploads/pnp.jpg')}}" 
+         alt="PNP Logo" class="gov-logo">
+    <div class="hq-tooltip">
+      <img src="{{ url_for('static', filename='uploads/pnp2.jpg') }}" alt="PNP HQ">
+      <p>PNP Cuyapo <br> <b>Address:</b> District 1, Cuyapo, N.E
+      <br> <b>Contact:</b> 09985985406</p>
+    </div>
+  </div>
+
+
+  <!-- PIO -->
+   <div class="gov-card">
+    <img src="{{ url_for('static', filename='uploads/cuyapologo.png')}}" 
+     alt="PIO Logo" class="gov-logo">
+     <div class="hq-tooltip">
+        <img src="{{ url_for('static', filename='uploads/townhall.jpg')}}" alt="TH12">
+        <p>Public Information Office <br><b>Address:</b> District 1, Cuyapo, N.E 
+        <br> <b>Email:</b> officeofthemayor.cuyapo2025<br>@gmail.com</br></p>
+     </div>
+   </div>
+</div>
+  </div>
+
 </body>
 </html>
