@@ -16,7 +16,8 @@ def init_db():
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     timestamp TEXT,
                     emergency_type TEXT,
-                    location TEXT
+                    location TEXT,
+                    details TEXT
                 )''')
     conn.commit()
     conn.close()
@@ -167,11 +168,13 @@ def chatbot_response(message):
                 "follow_up_index": 0
             })
 
-            # Save to DB
+            # Save to DB (✅ fixed: add details column)
             conn = sqlite3.connect(DB_NAME)
             c = conn.cursor()
-            c.execute("INSERT INTO reports (timestamp, emergency_type, location) VALUES (?, ?, ?)",
-                      (timestamp, f"{emergency_type} | {answers}", location))
+            c.execute(
+                "INSERT INTO reports (timestamp, emergency_type, location, details) VALUES (?, ?, ?, ?)",
+                (timestamp, emergency_type, location, answers)
+            )
             conn.commit()
             report_id = c.lastrowid
             conn.close()
@@ -181,9 +184,9 @@ def chatbot_response(message):
                 "id": report_id,
                 "timestamp": timestamp,
                 "emergency_type": emergency_type,
-                "answers": answers,
+                "details": answers,
                 "location": location
-            }, broadcast=True)
+            })
 
             encoded_location = urllib.parse.quote(location)
             maps_link = f"https://www.google.com/maps/search/?q={encoded_location}"
