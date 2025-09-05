@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 from datetime import datetime
-from flask import session, redirect, url_for
+from flask_socketio import SocketIO, emit
 import sqlite3
 import urllib.parse
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 DB_NAME = "reports.db"
 
 # Initialize database
@@ -107,7 +108,6 @@ def is_location_in_cuyapo(location):
 def chatbot_response(message):
     message = message.lower()
 
-    # Friendly talk
     greetings = ["hi", "hello", "kamusta", "kumusta", "heyy", "good day", "gud pm", "gud am", "may tao ba", "anyone there", "hello po", "uy", "yo", "hey"]
     help_commands = ["help", "tulong", "how to", "paano to", "pano gamitin", "guide", "what can you do", "ano to", "anong ginagawa mo", "instructions", "ano gamit mo"]
     bot_name_queries = ["ano pangalan mo", "who are you", "anong pangalan mo", "pangalan mo", "name please", "what's your name"]
@@ -121,7 +121,7 @@ def chatbot_response(message):
     if any(word in message for word in bot_name_queries):
         return "🤖 I’m CUYA-BOT — short for *Cuyapo AI Bot*. I help report local emergencies for faster response!"
 
-    # Follow-up logic
+    # Location input
     if user_state["stage"] == "location":
         if not is_location_in_cuyapo(message):
             user_state.update({
@@ -158,7 +158,7 @@ def chatbot_response(message):
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
             answers = "; ".join([f"{k} – {v}" for k, v in user_state["extra_info"].items() if k != "location"])
 
-            # Reset state
+            # Reset
             user_state.update({
                 "awaiting_location": False,
                 "emergency_type": None,
@@ -173,7 +173,17 @@ def chatbot_response(message):
             c.execute("INSERT INTO reports (timestamp, emergency_type, location) VALUES (?, ?, ?)",
                       (timestamp, f"{emergency_type} | {answers}", location))
             conn.commit()
+            report_id = c.lastrowid
             conn.close()
+
+            # 🔥 Emit to all reports.html clients
+            socketio.emit("new_report", {
+                "id": report_id,
+                "timestamp": timestamp,
+                "emergency_type": emergency_type,
+                "answers": answers,
+                "location": location
+            }, broadcast=True)
 
             encoded_location = urllib.parse.quote(location)
             maps_link = f"https://www.google.com/maps/search/?q={encoded_location}"
@@ -212,7 +222,7 @@ def home():
 
 @app.route("/chat")
 def chat_page():
-    return render_template("index.html")  
+    return render_template("index.html")
 
 @app.route('/chat_api', methods=['POST'])
 def chat_api():
@@ -240,4 +250,4 @@ def delete_report(report_id):
     return jsonify({'success': True})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
