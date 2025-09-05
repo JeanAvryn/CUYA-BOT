@@ -8,7 +8,7 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 DB_NAME = "reports.db"
 
-# Initialize database
+# Initialize database hehe
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
@@ -254,3 +254,4 @@ def delete_report(report_id):
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
+
