@@ -3,7 +3,7 @@
 <head>
     <title>Reports | CUYA-BOT</title>
      <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
-    <style>
+  <style>
         body {
             font-family: Verdana, Geneva, Tahoma, sans-serif;
             padding: 30px;
@@ -99,8 +99,25 @@
             });
         }
     </script>
+
+    <!-- 🔌 Real-time updates with Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on("new_report", function(data) {
+            const tbody = document.querySelector("#reportTable tbody");
+            const row = document.createElement("tr");
+            row.id = `row-${data.id}`;
+            row.innerHTML = `
+                <td>${data.id}</td>
+                <td>${data.timestamp}</td>
+                <td>${data.emergency_type}</td>
+                <td>${data.location}</td>
+                <td><button onclick="deleteReport(${data.id})">🗑️ Delete</button></td>
+            `;
+            tbody.prepend(row); // newest report on top
+        });
+    </script>
 </body>
 </html>
-
-
-
