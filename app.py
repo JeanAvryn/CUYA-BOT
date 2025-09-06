@@ -8,7 +8,7 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 DB_NAME = "reports.db"
 
-# Initialize database hehe
+# ---------- DATABASE ---------- #
 def init_db():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
@@ -24,7 +24,7 @@ def init_db():
 
 init_db()
 
-# Chat memory
+# ---------- CHAT MEMORY ---------- #
 user_state = {
     "awaiting_location": False,
     "emergency_type": None,
@@ -33,7 +33,7 @@ user_state = {
     "follow_up_index": 0
 }
 
-# Follow-up questions per emergency type
+# ---------- FOLLOW-UP QUESTIONS ---------- #
 follow_up_questions = {
     "🔥 Fire": [
         "Are there any injuries? (May nasugatan po ba?)",
@@ -90,7 +90,7 @@ follow_up_questions = {
     ],
 }
 
-# Location detector
+# ---------- CUYAPO BARANGAYS ---------- #
 def is_location_in_cuyapo(location):
     location = location.lower()
     cuyapo_keywords = [
@@ -105,7 +105,7 @@ def is_location_in_cuyapo(location):
     ]
     return any(keyword in location for keyword in cuyapo_keywords)
 
-# AI-Enhanced Chatbot Logic
+# ---------- LOGIC ---------- #
 def chatbot_response(message):
     message = message.lower()
 
@@ -195,16 +195,17 @@ def chatbot_response(message):
     # Detect emergencies
     keywords = {
         "🔥 Fire": ["fire", "sunog", "nasusunog", "may apoy", "apoy"],
-        "🌊 Flood": ["flood", "baha", "binaha", "nalubog", "tag-ulan", "rain", "lightning", "ulan", "bagyo", "typhoon", "storm", "kidlat"],
+        "🌊 Flood": ["flood", "baha", "binaha", "nalubog", "tag-ulan", "rain", "lightning",
+                      "ulan", "bagyo", "typhoon", "storm", "kidlat", "umuulan"],
         "🚑 Road Accident": ["accident", "bangga", "nabundol", "naaksidente", "crash", "collision"],
         "🌍 Earthquake": ["earthquake", "lindol", "umuga", "nayanig"],
-        "🏔️ Landslide": ["landslide", "guho", "gumuhong lupa", "land slide"],
+        "🏔️ Landslide": ["landslide", "guho", "gumuhong lupa", "land slide", "pagguho"],
         "🗂️ Oil Spill": ["oil spill", "langis", "tagas ng langis", "leak"],
         "⚡ Power Outage": ["brownout", "blackout", "power outage", "walang kuryente", "nawalan ng ilaw"],
-        "💥 Explosion": ["explosion", "sumabog", "pagsabog", "blasted"],
+        "💥 Explosion": ["explosion", "sumabog", "pagsabog", "blasted", "sabog"],
         "🌪️ Tornado": ["tornado", "ipo-ipo", "twister"],
         "🦠 Epidemic": ["epidemic", "virus", "lagnat", "ubo", "may sakit", "outbreak", "nagkakasakit", "sakit"],
-        "🐍 Animal Attack": ["snake", "bite", "nakagat", "aso", "pusa", "kinagat"],
+        "🐍 Animal Attack": ["snake", "bite", "nakagat", "aso", "pusa", "kinagat", "ahas", "kagat"],
         "🚨 Crime or Theft": ["nakawan", "magnanakaw", "krimen", "crime", "holdap", "hold-up", "burglary"],
         "⚠️ General Danger": ["delikado", "threat", "suspicious", "tulungan", "tulong", "kaso", "danger"]
     }
@@ -218,7 +219,7 @@ def chatbot_response(message):
 
     return "🤖 Sorry, I didn't understand. Please report a disaster like 'fire', 'flood', 'accident', etc."
 
-# Routes
+# ---------- FLASK ROUTES ---------- #
 @app.route('/')
 def home():
     return render_template('landing.html')
@@ -254,4 +255,3 @@ def delete_report(report_id):
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
-
